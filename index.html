@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#e8dfca">
+  <title>스탑워치</title>
+  <style>
+    :root { color-scheme: light; font-family: Inter, Pretendard, "Noto Sans KR", system-ui, sans-serif; }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; display: grid; place-items: center; padding: 42px 18px; color: #29251f; background-color: #e8dfca; background-image: radial-gradient(#756a5430 .75px, transparent .75px); background-size: 7px 7px; }
+    .app { width: min(100%, 620px); position: relative; }
+    header { position: relative; z-index: 2; width: fit-content; margin: 0 auto 26px; padding: 14px 30px 17px; text-align: center; background: #fff9e9; box-shadow: 3px 5px 0 #463d3022; transform: rotate(-2deg); clip-path: polygon(0 2%, 8% 0, 16% 2%, 24% 0, 32% 2%, 40% 0, 48% 2%, 56% 0, 64% 2%, 72% 0, 80% 2%, 88% 0, 100% 2%, 99% 100%, 90% 98%, 81% 100%, 72% 98%, 63% 100%, 54% 98%, 45% 100%, 36% 98%, 27% 100%, 18% 98%, 9% 100%, 0 98%); }
+    header::before { content: ""; position: absolute; width: 96px; height: 23px; top: -9px; left: calc(50% - 48px); background: #e9a8a0ba; box-shadow: 0 1px 2px #4a342333; transform: rotate(3deg); }
+    .car-sticker { position: relative; z-index: 3; display: flex; align-items: center; gap: 8px; width: max-content; margin: -7px auto -13px; padding: 5px 14px 3px 9px; border: 2px solid #fff9e9; border-radius: 48% 43% 45% 40%; background: #efb8a8; box-shadow: 3px 5px 0 #463d3025; animation: myvi-turn 12s ease-in-out infinite; transform-origin: center; }
+    @keyframes myvi-turn { 0%, 100% { transform: rotate(-7deg); } 50% { transform: rotate(7deg); } }
+    @media (prefers-reduced-motion: reduce) { .car-sticker { animation: none; } }
+    .car-sticker img { display: block; width: clamp(138px, 36vw, 190px); height: 82px; object-fit: contain; mix-blend-mode: multiply; }
+    .car-label { padding: 4px 7px; border: 1px dashed #794d3e; color: #643e34; font-size: 11px; font-weight: 900; letter-spacing: .08em; transform: rotate(-5deg); }
+    .eyebrow { color: #a65e52; font-size: 10px; font-weight: 800; letter-spacing: .2em; text-transform: uppercase; }
+    h1 { margin: 5px 0 0; font-size: 28px; letter-spacing: -.04em; }
+    .clock-card { position: relative; z-index: 1; padding: clamp(36px, 7vw, 58px) 20px 34px; background: #fff9e9; box-shadow: 9px 12px 0 #463d3022; text-align: center; clip-path: polygon(0 1%, 8% 0, 16% 1%, 24% 0, 32% 1%, 40% 0, 48% 1%, 56% 0, 64% 1%, 72% 0, 80% 1%, 88% 0, 100% 1%, 99% 12%, 100% 23%, 99% 34%, 100% 45%, 99% 56%, 100% 67%, 99% 78%, 100% 89%, 99% 100%, 90% 99%, 81% 100%, 72% 99%, 63% 100%, 54% 99%, 45% 100%, 36% 99%, 27% 100%, 18% 99%, 9% 100%, 0 99%, 1% 88%, 0 77%, 1% 66%, 0 55%, 1% 44%, 0 33%, 1% 22%, 0 11%); }
+    .clock-card::before { content: ""; position: absolute; top: -8px; right: 44px; width: 98px; height: 25px; background: #8fc4c5b8; box-shadow: 0 2px 3px #40382d22; transform: rotate(5deg); }
+    .display { font-variant-numeric: tabular-nums; font-size: clamp(48px, 12vw, 82px); font-weight: 700; letter-spacing: -.065em; line-height: 1; white-space: nowrap; color: #29251f; }
+    .display .fraction { color: #b76d5c; font-size: .48em; letter-spacing: -.03em; }
+    .status { min-height: 22px; margin-top: 17px; color: #8a7c68; font-size: 13px; }
+    .controls { display: flex; justify-content: center; gap: 12px; margin-top: 34px; }
+    button { min-width: 112px; border: 2px solid #393329; border-radius: 3px; padding: 13px 22px; color: #393329; background: #f0e4c8; box-shadow: 3px 4px 0 #393329; font: inherit; font-weight: 750; cursor: pointer; transition: transform .15s, box-shadow .15s, background .15s, opacity .15s; }
+    button:hover:not(:disabled) { background: #f7edda; transform: translate(-1px, -1px); box-shadow: 4px 5px 0 #393329; }
+    button:active:not(:disabled) { transform: translate(2px, 3px); box-shadow: 1px 1px 0 #393329; }
+    button:focus-visible { outline: 3px solid #b76d5c; outline-offset: 5px; }
+    button:disabled { opacity: .42; cursor: not-allowed; box-shadow: 1px 2px 0 #393329; }
+    .primary { color: #fff9e9; background: #557d76; border-color: #344f4a; box-shadow: 3px 4px 0 #344f4a; }
+    .primary:hover:not(:disabled) { background: #638d85; }
+    .primary.running { color: #fff9e9; background: #bc6758; border-color: #81483e; box-shadow: 3px 4px 0 #81483e; }
+    .laps { position: relative; width: 94%; margin: 29px auto 0; overflow: hidden; background: #d8e5dc; box-shadow: 5px 7px 0 #463d3022; transform: rotate(1deg); clip-path: polygon(0 1%, 10% 0, 20% 1%, 30% 0, 40% 1%, 50% 0, 60% 1%, 70% 0, 80% 1%, 90% 0, 100% 1%, 99% 20%, 100% 40%, 99% 60%, 100% 80%, 99% 100%, 80% 99%, 60% 100%, 40% 99%, 20% 100%, 0 99%, 1% 80%, 0 60%, 1% 40%, 0 20%); }
+    .laps::before { content: ""; position: absolute; z-index: 1; top: -8px; left: 34px; width: 83px; height: 22px; background: #f0cc78b8; box-shadow: 0 1px 3px #40382d22; transform: rotate(-7deg); }
+    .laps-head, .lap { display: grid; grid-template-columns: 1fr 1fr 1fr; align-items: center; padding: 14px 20px; }
+    .laps-head { color: #526e65; font-size: 12px; font-weight: 800; letter-spacing: .06em; border-bottom: 1px dashed #758c7e80; }
+    .lap { color: #343b34; font-size: 14px; font-variant-numeric: tabular-nums; border-bottom: 1px dashed #758c7e70; }
+    .lap:last-child { border-bottom: 0; }
+    .lap span:nth-child(2), .lap span:nth-child(3), .laps-head span:nth-child(2), .laps-head span:nth-child(3) { text-align: right; }
+    .lap.fastest { color: #38795b; font-weight: 700; }
+    .lap.slowest { color: #a44c42; font-weight: 700; }
+    .empty { padding: 24px 15px; color: #748479; text-align: center; font-size: 13px; }
+    .hint { margin: 23px 0 0; color: #786e5b; text-align: center; font-size: 12px; }
+    kbd { padding: 2px 6px; border: 1px solid #827864; border-radius: 3px; color: #534b3d; background: #f6eedc; box-shadow: 1px 2px 0 #82786466; font: inherit; }
+    @media (max-width: 420px) { .controls { gap: 8px; } button { min-width: 0; flex: 1; padding-inline: 12px; } .laps-head, .lap { padding-inline: 14px; } }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header><div class="eyebrow">TIMEKEEPER</div><h1>스탑워치</h1></header>
+    <div class="car-sticker" role="img" aria-label="빨간색 Perodua Myvi 사진이 천천히 회전합니다">
+      <img src="https://www.carbase.my/upload/48/72/724/exterior/s13-1637241285-3857-perodua-myvi.jpg" alt="빨간색 Perodua Myvi 실차 사진">
+      <span class="car-label">MYVI</span>
+    </div>
+    <section class="clock-card" aria-label="스탑워치">
+      <div class="display" role="timer" aria-live="off"><span id="time">00:00</span><span class="fraction">.00</span></div>
+      <div class="status" id="status" aria-live="polite">준비됨</div>
+      <div class="controls">
+        <button id="start" class="primary" type="button">시작</button>
+        <button id="lap" type="button" disabled>랩 기록</button>
+        <button id="reset" type="button" disabled>초기화</button>
+      </div>
+    </section>
+    <section class="laps" aria-label="랩 기록">
+      <div class="laps-head"><span>랩</span><span>랩 타임</span><span>누적 시간</span></div>
+      <div id="lap-list"><div class="empty">시작한 뒤 랩 기록을 남겨보세요.</div></div>
+    </section>
+    <p class="hint"><kbd>Space</kbd> 시작 / 일시정지 &nbsp; <kbd>L</kbd> 랩 기록</p>
+  </main>
+  <script>
+    const timeEl = document.querySelector('#time');
+    const fractionEl = document.querySelector('.fraction');
+    const statusEl = document.querySelector('#status');
+    const startBtn = document.querySelector('#start');
+    const lapBtn = document.querySelector('#lap');
+    const resetBtn = document.querySelector('#reset');
+    const lapList = document.querySelector('#lap-list');
+    let running = false, startedAt = 0, elapsed = 0, frame = 0, previousLap = 0;
+    const laps = [];
+
+    function format(ms) {
+      const centiseconds = Math.floor(ms / 10);
+      const cs = centiseconds % 100;
+      const totalSeconds = Math.floor(centiseconds / 100);
+      const seconds = totalSeconds % 60;
+      const minutes = Math.floor(totalSeconds / 60) % 60;
+      const hours = Math.floor(totalSeconds / 3600);
+      const main = hours ? `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}` : `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+      return { main, fraction: `.${String(cs).padStart(2, '0')}` };
+    }
+    function paint(ms) {
+      const value = format(ms);
+      timeEl.textContent = value.main;
+      fractionEl.textContent = value.fraction;
+    }
+    function tick(now) {
+      if (!running) return;
+      elapsed = now - startedAt;
+      paint(elapsed);
+      frame = requestAnimationFrame(tick);
+    }
+    function toggle() {
+      if (running) {
+        elapsed = performance.now() - startedAt;
+        running = false;
+        cancelAnimationFrame(frame);
+        paint(elapsed);
+        startBtn.textContent = '계속';
+        startBtn.classList.remove('running');
+        statusEl.textContent = '일시정지됨';
+      } else {
+        startedAt = performance.now() - elapsed;
+        running = true;
+        startBtn.textContent = '일시정지';
+        startBtn.classList.add('running');
+        statusEl.textContent = '측정 중';
+        frame = requestAnimationFrame(tick);
+      }
+      lapBtn.disabled = !running;
+      resetBtn.disabled = elapsed === 0 && laps.length === 0;
+    }
+    function renderLaps() {
+      if (!laps.length) {
+        lapList.innerHTML = '<div class="empty">시작한 뒤 랩 기록을 남겨보세요.</div>';
+        return;
+      }
+      const durations = laps.map(item => item.duration);
+      const fastest = Math.min(...durations), slowest = Math.max(...durations);
+      lapList.innerHTML = [...laps].reverse().map(item => {
+        const cls = laps.length > 1 && item.duration === fastest ? 'fastest' : laps.length > 1 && item.duration === slowest ? 'slowest' : '';
+        return `<div class="lap ${cls}"><span>랩 ${String(item.number).padStart(2, '0')}</span><span>${format(item.duration).main}${format(item.duration).fraction}</span><span>${format(item.total).main}${format(item.total).fraction}</span></div>`;
+      }).join('');
+    }
+    function recordLap() {
+      if (!running) return;
+      const now = performance.now();
+      const total = now - startedAt;
+      laps.push({ number: laps.length + 1, total, duration: total - previousLap });
+      previousLap = total;
+      renderLaps();
+      resetBtn.disabled = false;
+    }
+    function reset() {
+      running = false;
+      cancelAnimationFrame(frame);
+      elapsed = 0;
+      previousLap = 0;
+      laps.length = 0;
+      paint(0);
+      renderLaps();
+      startBtn.textContent = '시작';
+      startBtn.classList.remove('running');
+      lapBtn.disabled = true;
+      resetBtn.disabled = true;
+      statusEl.textContent = '준비됨';
+    }
+    startBtn.addEventListener('click', toggle);
+    lapBtn.addEventListener('click', recordLap);
+    resetBtn.addEventListener('click', reset);
+    document.addEventListener('keydown', event => {
+      if (event.code === 'Space' && !event.repeat && !['BUTTON', 'INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) {
+        event.preventDefault(); toggle();
+      } else if (event.key.toLowerCase() === 'l' && !event.repeat) recordLap();
+    });
+  </script>
+</body>
+</html>
